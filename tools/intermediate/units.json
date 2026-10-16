@@ -1,0 +1,119 @@
+{
+ "offset": 1,
+ "units": [
+  [
+   1,
+   "A world of difference",
+   7,
+   14
+  ],
+  [
+   2,
+   "The working week",
+   15,
+   22
+  ],
+  [
+   3,
+   "Good times, bad times",
+   23,
+   30
+  ],
+  [
+   4,
+   "Getting it right",
+   31,
+   38
+  ],
+  [
+   5,
+   "Our changing world",
+   39,
+   46
+  ],
+  [
+   6,
+   "What matters to me",
+   47,
+   54
+  ],
+  [
+   7,
+   "Passions and fashions",
+   55,
+   62
+  ],
+  [
+   8,
+   "No fear!",
+   63,
+   70
+  ],
+  [
+   9,
+   "It depends how you look at it",
+   71,
+   78
+  ],
+  [
+   10,
+   "All things high tech",
+   79,
+   86
+  ],
+  [
+   11,
+   "Seeing is believing",
+   87,
+   94
+  ],
+  [
+   12,
+   "Telling it how it is",
+   95,
+   102
+  ]
+ ],
+ "extra": [
+  [
+   "W",
+   "Writing",
+   103,
+   118
+  ],
+  [
+   "A",
+   "Tapescripts",
+   119,
+   133
+  ],
+  [
+   "G",
+   "Grammar Reference",
+   134,
+   147
+  ],
+  [
+   "P",
+   "Extra materials",
+   148,
+   152
+  ],
+  [
+   "L",
+   "Word list",
+   153,
+   158
+  ],
+  [
+   "V",
+   "Verb patterns & irregular verbs",
+   159,
+   161
+  ]
+ ],
+ "fix": {
+  "40:54:35": "T5.2"
+ },
+ "add": []
+}

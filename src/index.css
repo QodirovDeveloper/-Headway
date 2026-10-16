@@ -1,0 +1,383 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/fraunces/wght-italic.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+
+  /* warm paper in light mode, deep ink in dark mode */
+  --color-paper: #f7f2e9;
+  --color-paper-2: #efe7d8;
+  --color-ink: #1a1d29;
+  --color-night: #0d111c;
+  --color-night-2: #161b2b;
+
+  --color-coral: #ef5a3c;
+  --color-coral-soft: #ffe1d8;
+  --color-mint: #12a594;
+  --color-mint-soft: #d5f5ef;
+
+  --animate-pulse-ring: pulse-ring 2.2s ease-out infinite;
+  --animate-sheet-up: sheet-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-rise: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-eq: eq 0.9s ease-in-out infinite;
+
+  @keyframes eq {
+    0%, 100% { transform: scaleY(0.35); }
+    50% { transform: scaleY(1); }
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgb(239 90 60 / 0.55); }
+    70% { box-shadow: 0 0 0 8px rgb(239 90 60 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(239 90 60 / 0); }
+  }
+  @keyframes sheet-up {
+    from { transform: translateY(40px); opacity: 0.4; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+  }
+  @keyframes rise {
+    from { transform: translateY(14px); opacity: 0; }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased dark:bg-night dark:text-slate-100;
+  }
+  button {
+    cursor: pointer;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-coral;
+  }
+}
+
+/* Grain on the paper background — subtle, purely decorative */
+.paper-grain {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgb(239 90 60 / 0.08), transparent 40%),
+    radial-gradient(circle at 90% 30%, rgb(18 165 148 / 0.08), transparent 45%);
+}
+.dark .paper-grain {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgb(239 90 60 / 0.12), transparent 40%),
+    radial-gradient(circle at 90% 30%, rgb(18 165 148 / 0.10), transparent 45%);
+}
+
+/* Liquid glass — see components/Glass.tsx. Clear, never blurred: Chromium adds
+   real refraction (and a little rim ice) through an SVG backdrop filter; the edges,
+   highlights and depth come from here.
+   Chrome paints a filtered backdrop over the element's own background, so the
+   tint and the inner rim light live on ::before, which sits above it. */
+@layer components {
+  .glass {
+    --glass-tint: rgb(255 255 255 / 0.16);
+    --glass-rim: rgb(255 255 255 / 0.95);
+    --glass-rim-soft: rgb(255 255 255 / 0.32);
+    --glass-sheen: rgb(255 255 255 / 0.45);
+    --glass-shadow: rgb(26 29 41 / 0.2);
+    --glass-halo: rgb(255 255 255 / 0.9);
+    position: relative;
+    isolation: isolate;
+    -webkit-backdrop-filter: saturate(1.6);
+    backdrop-filter: saturate(1.6);
+    /* lift off the page */
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.08),
+      0 14px 34px -12px var(--glass-shadow);
+    /* clear glass has no blur, so its text gets a soft halo to stand off the page */
+    text-shadow:
+      0 0 1px var(--glass-halo),
+      0 0 5px var(--glass-halo),
+      0 0 12px var(--glass-halo);
+  }
+  .dark .glass {
+    --glass-tint: rgb(22 27 43 / 0.3);
+    --glass-rim: rgb(255 255 255 / 0.5);
+    --glass-rim-soft: rgb(255 255 255 / 0.14);
+    --glass-sheen: rgb(255 255 255 / 0.16);
+    --glass-shadow: rgb(0 0 0 / 0.6);
+    --glass-halo: rgb(13 17 28 / 0.85);
+  }
+  .glass .text-white {
+    text-shadow: none;
+  }
+
+  /* Body of the slab: tint, specular sheen, and light caught along a thick rim. */
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background:
+      radial-gradient(120% 100% at 12% -40%, var(--glass-sheen), transparent 60%),
+      radial-gradient(80% 90% at 105% 140%, rgb(255 255 255 / 0.14), transparent 60%),
+      var(--glass-tint);
+    box-shadow:
+      inset 0 1.5px 1px -0.5px var(--glass-rim),
+      inset 0 -1.5px 1px -0.5px var(--glass-rim-soft),
+      inset 1.5px 0 1px -1px var(--glass-rim-soft),
+      inset -1.5px 0 1px -1px var(--glass-rim-soft),
+      inset 0 0 16px 1px rgb(255 255 255 / 0.14),
+      inset 0 -8px 14px -10px rgb(26 29 41 / 0.12);
+    pointer-events: none;
+  }
+  /* Hairline edge that brightens where the light hits — top-left and bottom-right. */
+  .glass::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.95),
+      rgb(255 255 255 / 0.2) 24%,
+      rgb(255 255 255 / 0) 48%,
+      rgb(255 255 255 / 0.12) 70%,
+      rgb(255 255 255 / 0.75)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+  .dark .glass::after {
+    opacity: 0.6;
+  }
+
+  /* Thick slab: a heavier rim that catches the light all round, like the edge of
+     a magnifying glass. Used on the start page and the level pages. */
+  .glass.glass-thick {
+    --glass-glow: rgb(255 255 255 / 0.22);
+    --glass-band: rgb(255 255 255 / 0.3);
+    --glass-turn: rgb(26 29 41 / 0.2);
+    box-shadow:
+      0 2px 4px rgb(0 0 0 / 0.1),
+      0 22px 44px -16px var(--glass-shadow);
+  }
+  .dark .glass.glass-thick {
+    --glass-glow: rgb(255 255 255 / 0.08);
+    --glass-band: rgb(255 255 255 / 0.14);
+    --glass-turn: rgb(0 0 0 / 0.4);
+  }
+  .glass.glass-thick::before {
+    box-shadow:
+      /* bright lip along the top, softer along the other edges */
+      inset 0 2.5px 1.5px -1px var(--glass-rim),
+      inset 0 -2px 1.5px -0.5px var(--glass-rim-soft),
+      inset 2.5px 0 1.5px -1px var(--glass-rim-soft),
+      inset -2.5px 0 1.5px -1px var(--glass-rim-soft),
+      /* the band of glass you see looking into the edge */
+      inset 0 0 0 1.5px var(--glass-band),
+      /* light pooled just under the top rim, shade where the slab turns away below */
+      inset 0 12px 14px -12px rgb(255 255 255 / 0.55),
+      inset 0 -14px 18px -14px var(--glass-turn),
+      /* thickness glowing inside the edge */
+      inset 0 0 26px 3px var(--glass-glow);
+  }
+  .glass.glass-thick::after {
+    padding: 1.5px;
+  }
+
+  /* Cards resting on the paper: enough body to read as a pane of glass. */
+  .glass.glass-card {
+    --glass-tint: linear-gradient(160deg, rgb(255 255 255 / 0.62), rgb(255 255 255 / 0.38));
+  }
+  .dark .glass.glass-card {
+    --glass-tint: linear-gradient(160deg, rgb(30 36 56 / 0.7), rgb(22 27 43 / 0.5));
+  }
+  /* Reading surfaces (the answer sheet): almost paper, still glass at the edges. */
+  .glass.glass-paper {
+    --glass-tint: linear-gradient(rgb(247 242 233 / 0.9), rgb(247 242 233 / 0.96));
+  }
+  .dark .glass.glass-paper {
+    --glass-tint: linear-gradient(rgb(22 27 43 / 0.92), rgb(22 27 43 / 0.97));
+  }
+  /* Smoked glass for dark accents (Continue cards, badges). */
+  .glass.glass-ink,
+  .dark .glass.glass-ink {
+    --glass-tint: linear-gradient(160deg, rgb(26 29 41 / 0.8), rgb(26 29 41 / 0.92));
+    --glass-sheen: rgb(255 255 255 / 0.22);
+    --glass-rim: rgb(255 255 255 / 0.55);
+    --glass-rim-soft: rgb(255 255 255 / 0.16);
+    --glass-halo: transparent;
+    color: white;
+  }
+
+  /* Follows the theme: light glass by day, smoked glass at night (Continue cards). */
+  .glass.glass-tone {
+    --glass-tint: linear-gradient(160deg, rgb(255 255 255 / 0.66), rgb(255 255 255 / 0.42));
+    color: var(--color-ink);
+  }
+  .dark .glass.glass-tone {
+    --glass-tint: linear-gradient(160deg, rgb(26 29 41 / 0.8), rgb(26 29 41 / 0.92));
+    --glass-sheen: rgb(255 255 255 / 0.22);
+    --glass-rim: rgb(255 255 255 / 0.55);
+    --glass-rim-soft: rgb(255 255 255 / 0.16);
+    --glass-halo: transparent;
+    color: white;
+  }
+
+  /* Mint glass for the answer sheet's Show all / Hide all button. */
+  .glass.glass-mint,
+  .dark .glass.glass-mint {
+    --glass-tint: linear-gradient(180deg, rgb(32 196 175 / 0.92), rgb(18 165 148 / 0.88) 55%, rgb(13 128 116 / 0.92));
+    --glass-sheen: rgb(255 255 255 / 0.4);
+    --glass-rim: rgb(255 255 255 / 0.85);
+    --glass-rim-soft: rgb(255 255 255 / 0.3);
+    --glass-shadow: rgb(18 165 148 / 0.55);
+    --glass-halo: transparent;
+    color: white;
+  }
+
+  /* Clear crystal: almost no tint, cut facets catching the light and a rim that
+     splits light into colours like a prism (answer sheet). */
+  .glass.glass-crystal {
+    --glass-tint:
+      linear-gradient(118deg, transparent 0 28%, rgb(255 255 255 / 0.2) 28% 28.4%, rgb(255 255 255 / 0.07) 28.4% 47%, transparent 47%),
+      linear-gradient(242deg, transparent 0 60%, rgb(255 255 255 / 0.16) 60% 60.4%, rgb(255 255 255 / 0.05) 60.4% 78%, transparent 78%),
+      linear-gradient(12deg, transparent 0 84%, rgb(255 255 255 / 0.12) 84% 84.3%, transparent 84.3%),
+      linear-gradient(160deg, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.14));
+    --glass-sheen: rgb(255 255 255 / 0.6);
+    --glass-rim: rgb(255 255 255);
+    --glass-rim-soft: rgb(255 255 255 / 0.45);
+  }
+  .dark .glass.glass-crystal {
+    --glass-tint:
+      linear-gradient(118deg, transparent 0 28%, rgb(255 255 255 / 0.12) 28% 28.4%, rgb(255 255 255 / 0.04) 28.4% 47%, transparent 47%),
+      linear-gradient(242deg, transparent 0 60%, rgb(255 255 255 / 0.1) 60% 60.4%, rgb(255 255 255 / 0.03) 60.4% 78%, transparent 78%),
+      linear-gradient(12deg, transparent 0 84%, rgb(255 255 255 / 0.08) 84% 84.3%, transparent 84.3%),
+      linear-gradient(160deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03));
+    --glass-sheen: rgb(255 255 255 / 0.28);
+    --glass-rim: rgb(255 255 255 / 0.75);
+    --glass-rim-soft: rgb(255 255 255 / 0.22);
+  }
+  /* Crystal panes that hold text: a touch more body so the words stay readable. */
+  .glass.glass-crystal-pane {
+    --glass-tint: linear-gradient(160deg, rgb(255 255 255 / 0.84), rgb(255 255 255 / 0.66));
+    --glass-rim: rgb(255 255 255);
+  }
+  .dark .glass.glass-crystal-pane {
+    --glass-tint: linear-gradient(160deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03)), rgb(10 13 22 / 0.62);
+    --glass-rim: rgb(255 255 255 / 0.6);
+  }
+  /* the prism: a thin rim of split light around crystal */
+  .glass.glass-crystal::after,
+  .glass.glass-crystal-pane::after {
+    padding: 1.5px;
+    background: conic-gradient(
+      from 210deg,
+      rgb(255 255 255 / 0.95),
+      rgb(150 230 255 / 0.85) 10%,
+      rgb(255 255 255 / 0.5) 20%,
+      rgb(255 160 230 / 0.75) 32%,
+      rgb(255 255 255 / 0.35) 45%,
+      rgb(255 240 150 / 0.75) 58%,
+      rgb(255 255 255 / 0.5) 70%,
+      rgb(170 200 255 / 0.85) 84%,
+      rgb(255 255 255 / 0.95)
+    );
+  }
+  .dark .glass.glass-crystal::after,
+  .dark .glass.glass-crystal-pane::after {
+    opacity: 0.75;
+  }
+
+  /* Bars that carry text: a little milkier through the middle, clear at the rim
+     where the backdrop bends. */
+  .glass.glass-legible {
+    --glass-tint: linear-gradient(
+      rgb(255 255 255 / 0.32),
+      rgb(255 255 255 / 0.55) 30%,
+      rgb(255 255 255 / 0.55) 70%,
+      rgb(255 255 255 / 0.32)
+    );
+  }
+  .dark .glass.glass-legible {
+    --glass-tint: linear-gradient(
+      rgb(22 27 43 / 0.4),
+      rgb(22 27 43 / 0.66) 30%,
+      rgb(22 27 43 / 0.66) 70%,
+      rgb(22 27 43 / 0.4)
+    );
+  }
+}
+
+/* Headings cut from glass — see components/GlassText.tsx. The letters are filled with
+   the same school photo that sits behind the page, then bent and lit by the SVG filter. */
+.glass-text {
+  color: transparent;
+  background-image: url('/images/myschool-2400.webp');
+  background-size: cover;
+  background-position: 45% center;
+  background-attachment: fixed;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.glass-text * {
+  color: transparent !important;
+}
+.glass-text-lg {
+  filter: url(#glass-text-lg-light);
+}
+.glass-text-md {
+  filter: url(#glass-text-md-light);
+}
+.dark .glass-text-lg {
+  filter: url(#glass-text-lg);
+}
+.dark .glass-text-md {
+  filter: url(#glass-text-md);
+}
+
+/* Answer sheet: a hidden answer is etched crystal — frosted white with fine
+   glints; tapping it clears it. */
+.answer-blank {
+  color: transparent;
+  /* the glass's text halo would draw the hidden answer — keep it off */
+  text-shadow: none !important;
+  user-select: none;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgb(226 232 240), rgb(203 213 225));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255),
+    inset 0 -1px 1px rgb(26 29 41 / 0.12),
+    inset 0 0 0 1px rgb(26 29 41 / 0.08);
+}
+.dark .answer-blank {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgb(255 255 255 / 0.26), rgb(255 255 255 / 0.14));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.4),
+    inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -1,0 +1,152 @@
+{
+ "offset": 1,
+ "units": [
+  [
+   1,
+   "Home and away!",
+   7,
+   14
+  ],
+  [
+   2,
+   "Been there, got the T-shirt!",
+   15,
+   22
+  ],
+  [
+   3,
+   "News and views",
+   23,
+   30
+  ],
+  [
+   4,
+   "The naked truth",
+   31,
+   38
+  ],
+  [
+   5,
+   "Looking ahead",
+   39,
+   46
+  ],
+  [
+   6,
+   "Hitting the big time",
+   47,
+   54
+  ],
+  [
+   7,
+   "Getting along",
+   55,
+   62
+  ],
+  [
+   8,
+   "How remarkable!",
+   63,
+   70
+  ],
+  [
+   9,
+   "The way we were",
+   71,
+   78
+  ],
+  [
+   10,
+   "Over my dead body!",
+   79,
+   86
+  ],
+  [
+   11,
+   "It's all hypothetical!",
+   87,
+   94
+  ],
+  [
+   12,
+   "Time flies",
+   95,
+   102
+  ]
+ ],
+ "extra": [
+  [
+   "W",
+   "Writing",
+   103,
+   120
+  ],
+  [
+   "A",
+   "Tapescripts",
+   121,
+   139
+  ],
+  [
+   "G",
+   "Grammar Reference",
+   140,
+   153
+  ],
+  [
+   "L",
+   "Word list",
+   154,
+   160
+  ],
+  [
+   "P",
+   "Extra materials",
+   161,
+   166
+  ],
+  [
+   "V",
+   "Verb patterns & irregular verbs",
+   167,
+   168
+  ]
+ ],
+ "fix": {
+  "54:11:57": "T6.9"
+ },
+ "add": [
+  [
+   38,
+   "T4.11",
+   8.6,
+   31.4,
+   5.0,
+   1.3
+  ],
+  [
+   38,
+   "T4.12",
+   8.6,
+   34.4,
+   5.0,
+   1.3
+  ],
+  [
+   42,
+   "T5.7",
+   9.8,
+   17.5,
+   4.3,
+   1.3
+  ],
+  [
+   42,
+   "T5.8",
+   9.8,
+   25.1,
+   4.3,
+   1.3
+  ]
+ ]
+}
