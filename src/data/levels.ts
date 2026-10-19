@@ -39,10 +39,8 @@ export const LEVELS: LevelMeta[] = [
     name: 'Upper-Intermediate',
     cefr: 'B2',
     gradient: 'from-violet-500 to-purple-700',
-    // Coming soon: its pages and audio were taken out of public/. The book data is still in
-    // ./upper-intermediate — once the media is back, restore:
-    //   load: () => import('./upper-intermediate').then((m) => m.default),
-    //   stats: { units: 12, tracks: 75, answers: 320 },
+    load: () => import('./upper-intermediate').then((m) => m.default),
+    stats: { units: 12, tracks: 75, answers: 320 },
   },
 ];
 

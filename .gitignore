@@ -5,6 +5,14 @@ dist
 *.local.md
 *.tsbuildinfo
 
-# book pages and audio (~1.2 GB) live outside git — see README.md
-# public/*/audio/
-# public/*/pages/
+# book pages and audio (~1.2 GB) live in R2 — see README.md
+public/*/audio/
+public/*/pages/
+public/*/cover.webp
+
+# local media backup
+media/
+
+# Cloudflare: local database and secrets
+.wrangler
+.dev.vars*

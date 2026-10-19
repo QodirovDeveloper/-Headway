@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronDown, CircleCheck, Headphones } from 'lucide-react';
 import type { Section } from '../data/types';
+import { useAuthApi } from '../lib/auth';
 import { gradientOf, isUnit, pageNumbers, sectionId, trackLabel, useLevel } from '../lib/level';
 import { levelHref, sectionHref } from '../lib/route';
 import { useStored } from '../lib/storage';
@@ -10,6 +11,7 @@ import AnswerSheet from './AnswerSheet';
 import BookPage from './BookPage';
 import Glass from './Glass';
 import type { LastVisit } from './Home';
+import QuizSheet from './QuizSheet';
 import { ThemeButton } from './TopBar';
 
 interface Props {
@@ -28,6 +30,8 @@ export default function Reader({ section, startPage, theme }: Props) {
   const listened = listenedIn(level.id);
 
   const [answerIdx, setAnswerIdx] = useState<number | null>(null);
+  const teacher = useAuthApi().user.role !== 'student';
+  const closeSheet = useCallback(() => setAnswerIdx(null), []);
   const [current, setCurrent] = useState(startPage ?? section.from);
   const [, setLast] = useStored<LastVisit | null>(`last.${level.id}`, null);
   const [, setLastLevel] = useStored<string | null>('lastLevel', null);
@@ -242,7 +246,12 @@ export default function Reader({ section, startPage, theme }: Props) {
         </nav>
       </main>
 
-      {answerIdx != null && <AnswerSheet key={answerIdx} index={answerIdx} onClose={() => setAnswerIdx(null)} />}
+      {answerIdx != null &&
+        (teacher ? (
+          <AnswerSheet key={answerIdx} index={answerIdx} onClose={closeSheet} />
+        ) : (
+          <QuizSheet key={answerIdx} index={answerIdx} onClose={closeSheet} />
+        ))}
     </div>
   );
 }
