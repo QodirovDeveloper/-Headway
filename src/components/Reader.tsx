@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronDown, CircleCheck, Headphones } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronDown, CircleCheck, Headphones, Loader2 } from 'lucide-react';
 import type { Section } from '../data/types';
 import { useAuthApi } from '../lib/auth';
 import { gradientOf, isUnit, pageNumbers, sectionId, trackLabel, useLevel } from '../lib/level';
@@ -25,7 +25,7 @@ export default function Reader({ section, startPage, theme }: Props) {
   const pages = pageNumbers(section);
   const tracks = level.tracksOf(section);
   const answerCount = level.answersOf(section).length;
-  const { now, playing, listenedIn, play, toggle } = usePlayer();
+  const { now, playing, status, listenedIn, play, toggle } = usePlayer();
   const activeTrack = now?.level.id === level.id ? now.track : null;
   const listened = listenedIn(level.id);
 
@@ -186,6 +186,7 @@ export default function Reader({ section, startPage, theme }: Props) {
               {tracks.map((t) => {
                 const active = t === activeTrack;
                 const heard = listened.has(t);
+                const isBusy = active && (status === 'loading' || status === 'buffering');
                 return (
                   <button
                     key={t}
@@ -197,7 +198,13 @@ export default function Reader({ section, startPage, theme }: Props) {
                         : 'bg-white/55 text-ink ring-1 ring-white/70 hover:ring-coral/40 dark:bg-white/5 dark:text-slate-200 dark:ring-white/10'
                     }`}
                   >
-                    {active && playing ? <EqualizerIcon /> : heard && <Check className="size-3.5 text-mint" strokeWidth={3} />}
+                    {isBusy ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : active && playing ? (
+                      <EqualizerIcon />
+                    ) : (
+                      heard && <Check className="size-3.5 text-mint" strokeWidth={3} />
+                    )}
                     {trackLabel(t)}
                   </button>
                 );
