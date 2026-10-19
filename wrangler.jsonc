@@ -1,0 +1,35 @@
+// Cloudflare Worker: serves the built site, the /api/ server and the book media.
+// Deploying: see README.md (create the D1 database, set ADMIN_PASSWORD, deploy).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "headway",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // The server runs first for the API and for book pages/audio (signed-in users only).
+    "run_worker_first": [
+      "/api/*",
+      "/beginner/*",
+      "/elementary/*",
+      "/pre-intermediate/*",
+      "/intermediate/*",
+      "/upper-intermediate/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "headway",
+      // Created with `npx wrangler d1 create headway`.
+      "database_id": "ae414d84-6618-4174-b36f-518ce74675bd"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "HEADWAY_MEDIA",
+      "bucket_name": "headway-media"
+    }
+  ]
+}

@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
+import Admin from './components/Admin';
 import AuthPage from './components/Auth';
 import { GlassTextDefs } from './components/GlassText';
 import Home from './components/Home';
 import Hub from './components/Hub';
+import Market from './components/Market';
 import PlayerBar from './components/PlayerBar';
+import Ranking from './components/Ranking';
 import Reader from './components/Reader';
 import { findLevel } from './data/levels';
-import { SIGN_UP_OPEN, useAuth } from './lib/auth';
+import { AuthContext, SIGN_UP_OPEN, useAuth } from './lib/auth';
 import { LevelContext, useLevelData } from './lib/level';
 import { hubHref, useRoute } from './lib/route';
 import { useTheme } from './lib/theme';
@@ -34,6 +37,8 @@ export default function App() {
     if (auth.user && (route.name === 'login' || route.name === 'register')) location.hash = hubHref;
   }, [auth.user, route.name]);
 
+  if (!auth.ready) return <Loading />;
+
   if (!auth.user) {
     const mode = route.name === 'register' && SIGN_UP_OPEN ? 'register' : 'login';
     return (
@@ -44,7 +49,11 @@ export default function App() {
   }
 
   let page: React.ReactNode;
-  if (route.name === 'hub' || !meta?.load) page = <Hub theme={theme} onLogOut={auth.logOut} />;
+  if (route.name === 'market') page = <Market theme={theme} />;
+  else if (route.name === 'ranking') page = <Ranking theme={theme} />;
+  else if (route.name === 'admin' && auth.user.role !== 'student') page = <Admin theme={theme} />;
+  else if (route.name !== 'level' && route.name !== 'section') page = <Hub theme={theme} />;
+  else if (!meta?.load) page = <Hub theme={theme} />;
   else if (!level) page = <Loading />;
   else
     page = (
@@ -58,12 +67,14 @@ export default function App() {
     );
 
   return (
-    <div className="paper-grain min-h-dvh">
-      {!section && <SchoolBackdrop />}
-      {!section && <GlassTextDefs />}
-      {page}
-      <PlayerBar />
-    </div>
+    <AuthContext.Provider value={auth}>
+      <div className="paper-grain min-h-dvh">
+        {!section && <SchoolBackdrop />}
+        {!section && <GlassTextDefs />}
+        {page}
+        <PlayerBar />
+      </div>
+    </AuthContext.Provider>
   );
 }
 

@@ -26,7 +26,13 @@
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-rise: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-eq: eq 0.9s ease-in-out infinite;
+  --animate-shake: shake 0.35s ease-in-out;
 
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
   @keyframes eq {
     0%, 100% { transform: scaleY(0.35); }
     50% { transform: scaleY(1); }

@@ -1,6 +1,7 @@
-import { ArrowRight, CircleCheck, Headphones, Layers, Lock, LogOut } from 'lucide-react';
+import { ArrowRight, CircleCheck, Headphones, Layers, Lock } from 'lucide-react';
 import { LEVELS, findLevel } from '../data/levels';
 import type { LevelMeta } from '../data/types';
+import { useAuthApi } from '../lib/auth';
 import { coverSrc } from '../lib/level';
 import { levelHref } from '../lib/route';
 import { useStored } from '../lib/storage';
@@ -8,12 +9,13 @@ import type { ThemeApi } from '../lib/theme';
 import { usePlayer } from '../player/PlayerContext';
 import Glass from './Glass';
 import GlassText from './GlassText';
+import { LogOutButton, WalletBar } from './Page';
 import { Logo, ThemeButton } from './TopBar';
 
 /** Start page: all five Student's Books. */
-export default function Hub({ theme, onLogOut }: { theme: ThemeApi; onLogOut: () => void }) {
+export default function Hub({ theme }: { theme: ThemeApi }) {
   const [lastLevel] = useStored<string | null>('lastLevel', null);
-  const player = usePlayer();
+  const { user } = useAuthApi();
   const last = lastLevel ? findLevel(lastLevel) : undefined;
 
   return (
@@ -24,27 +26,13 @@ export default function Hub({ theme, onLogOut }: { theme: ThemeApi; onLogOut: ()
           <span className="font-semibold tracking-tight">Headway</span>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              player.stop();
-              onLogOut();
-            }}
-            className="rounded-full transition hover:-translate-y-px active:scale-95"
-          >
-            <Glass
-              as="span"
-              bezel={14}
-              strength={20}
-              ice={0}
-              edgeLight={0.2}
-              className="glass-thick inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold"
-            >
-              <LogOut className="size-4" /> Log out
-            </Glass>
-          </button>
+          <LogOutButton />
           <ThemeButton theme={theme} />
         </div>
       </nav>
+      <div className="mt-2">
+        <WalletBar />
+      </div>
 
       <header className="animate-rise pt-10 pb-10 sm:pt-16">
         <p className="text-xs font-semibold tracking-[0.25em] text-coral uppercase">4th edition · Student's Books</p>
@@ -54,8 +42,9 @@ export default function Hub({ theme, onLogOut }: { theme: ThemeApi; onLogOut: ()
           <span className="font-extrabold text-ink/80 dark:text-slate-300">from A1 to B2</span>
         </GlassText>
         <p className="mt-5 max-w-md text-[15px] leading-relaxed text-ink/65 dark:text-slate-400">
-          Pick your level and flip through the book. Tap a track label to play the audio, and tap ✓ to check the
-          answers.
+          {user.role !== 'student'
+            ? 'Pick a level and flip through the book. Tap a track label to play the audio, and tap ✓ to see the answers.'
+            : 'Pick your level and flip through the book. Tap ✓ to do an exercise — every right answer gives you 1 XP and 1 SILVER.'}
         </p>
       </header>
 

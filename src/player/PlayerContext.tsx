@@ -11,7 +11,7 @@ import {
 import { trackLabel, type Level } from '../lib/level';
 import { useStored } from '../lib/storage';
 
-export const SPEEDS = [1, 0.75, 0.9, 1.25] as const;
+export const SPEEDS = [1, 0.75, 0.9, 1.25, 1.5, 2] as const;
 
 export interface NowPlaying {
   level: Level;
